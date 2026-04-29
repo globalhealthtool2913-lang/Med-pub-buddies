@@ -71,7 +71,42 @@ button:hover {
 
 
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
+<script>
+  const supabaseUrl = "PASTE_YOUR_PROJECT_URL";
+  const supabaseKey = "PASTE_YOUR_ANON_KEY";
+
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+  const form = document.querySelector("form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const { error } = await supabaseClient
+      .from("submissions")
+      .insert([
+        {
+          name: formData.get("name"),
+          email: formData.get("email"),
+          title: formData.get("title"),
+          type: formData.get("type"),
+          message: formData.get("message")
+        }
+      ]);
+
+    if (error) {
+      alert("Error submitting form");
+      console.log(error);
+    } else {
+      alert("Submitted successfully!");
+      form.reset();
+    }
+  });
+</script>
 <header>
     <h1>Submit Your Work</h1>
     <p>Manuscript & Abstract Submission Portal</p>
