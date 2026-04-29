@@ -69,7 +69,42 @@ button:hover {
 </style>
 </head>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
+<script>
+  const supabaseUrl = "YOUR_SUPABASE_URL";
+  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+  const form = document.getElementById("submissionForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const { error } = await supabaseClient
+      .from("submissions")
+      .insert([
+        {
+          name: formData.get("name"),
+          email: formData.get("email"),
+          title: formData.get("title"),
+          type: formData.get("type"),
+          message: formData.get("message"),
+        }
+      ]);
+
+    if (error) {
+      alert("Error submitting form");
+      console.log(error);
+    } else {
+      alert("Submission successful!");
+      form.reset();
+    }
+  });
+</script>
 <body>
 
 <header>
@@ -86,8 +121,8 @@ button:hover {
 
 <div class="container">
 
-<form action="https://formspree.io/f/mnjljrav" method="POST">
-
+ <form id="submissionForm"> 
+     
   <input type="hidden" name="_next" value="https://medpubbuddies-png.github.io/Med-pub-buddies/success.html">
 
   <input type="text" name="name" placeholder="Full Name" required>
